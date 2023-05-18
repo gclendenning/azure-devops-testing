@@ -30,10 +30,10 @@ steps:
 - script: echo 'Dont show this for PRs'
   condition: and(succeeded(), eq(variables.triggeredByPullRequest, false))
 
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.10'
-    displayName: 'Use Python 3.10'
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+  displayName: 'Use Python 3.10'
 
 - bash: |
     export PACKAGE_VERSION="$(python setup.py --version)"
