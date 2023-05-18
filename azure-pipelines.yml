@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+    - main
+  tags:
+    include:
+    - release-*
+
+pr:
+  branches:
+    include:
+    - main
+    exclude:
+    - doc/*
+    - README.rst
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo line 1
+    echo line 2
+  displayName: 'Run a multi-line script'
