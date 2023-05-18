@@ -29,4 +29,5 @@ steps:
 - script: |
     echo line 1
     echo line 2
+    echo 'build reason $(Build.Reason)'
   displayName: 'Run a multi-line script'
