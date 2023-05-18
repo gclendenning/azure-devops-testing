@@ -44,10 +44,21 @@ steps:
 - script: echo 'version $(packageVersionFormatted)'
   displayName: 'test'
 
-- script: |
+- bash: |
     echo "building package"
-    echo "publishing"
-  displayName: 'only build on tag'
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
+  displayName: 'Error if package version doesn't match tag'
+  condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
+
+- script: echo "Checking if the package should be published"
+- ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
+    - script: echo "publishing"
+- ${{ else }}:
+  - bash: |
+    echo "Tag ${variables.Build.SourceBranchName} does not match version derived from setup.py ${packageVersionFormatted}"
+    exit 1
+  displayName: 'Publish package'
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+
+
 
 
