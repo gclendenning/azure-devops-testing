@@ -22,6 +22,9 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  triggeredByPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
+
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
@@ -31,3 +34,6 @@ steps:
     echo line 2
     echo 'build reason $(Build.Reason)'
   displayName: 'Run a multi-line script'
+
+- script: echo 'Dont show this for PRs'
+  condition: eq(variables.triggeredByPullRequest, false)
