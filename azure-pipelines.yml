@@ -65,17 +65,18 @@ stages:
           displayName: "Error if package version doesn't match tag"
           condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
-        - script: echo "Checking if the package should be published"
-          displayName: 'Publish package'
-        - ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
-          - script: |
-              echo "publishing"
-              echo $(Build.SourceBranchName)
-              echo $(packageVersionFormatted)
-        - ${{ else }}:
-          - script: |
-              echo "Tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
-              exit 1
+        - script: |
+            echo "publishing"
+            echo $(Build.SourceBranchName)
+            echo $(packageVersionFormatted)
+          displayName: Publish package if version matches tag
+          condition: and(succeeded(), eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
+
+        - script: |
+            echo "Tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+            exit 1
+          displayName: Raise error if version doesnt tag
+          condition: and(succeeded(), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
 
 
