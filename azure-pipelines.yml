@@ -52,13 +52,13 @@ steps:
 
 - script: echo "Checking if the package should be published"
 - ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
-    - script: echo "publishing"
+  - script: echo "publishing"
 - ${{ else }}:
-    - bash: |
-      echo "Tag ${variables.Build.SourceBranchName} does not match version derived from setup.py ${packageVersionFormatted}"
-      exit 1
-    displayName: 'Publish package'
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+  - script: |
+    echo "Tag $(variables.Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+    exit 1
+  displayName: 'Publish package'
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
 
 
 
