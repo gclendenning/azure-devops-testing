@@ -70,11 +70,11 @@ stages:
         - ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
           - script: |
               echo "publishing"
-              echo $(variables.Build.SourceBranchName)
+              echo $(Build.SourceBranchName)
               echo $(packageVersionFormatted)
         - ${{ else }}:
           - script: |
-              echo "Tag $(variables.Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+              echo "Tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
               exit 1
 
 
