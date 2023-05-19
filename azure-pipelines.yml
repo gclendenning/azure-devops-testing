@@ -47,7 +47,7 @@ steps:
 - bash: |
     echo "stuff"
     echo "building package"
-  displayName: 'Error if package version doesn't match tag'
+  displayName: "Error if package version doesn't match tag"
   condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
 - script: echo "Checking if the package should be published"
