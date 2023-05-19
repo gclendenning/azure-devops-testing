@@ -55,10 +55,10 @@ steps:
   - script: echo "publishing"
 - ${{ else }}:
   - script: |
-    echo "Tag $(variables.Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
-    exit 1
-  displayName: 'Publish package'
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+      echo "Tag $(variables.Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+      exit 1
+   displayName: 'Publish package'
+   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
 
 
 
