@@ -25,39 +25,58 @@ pool:
 variables:
   triggeredByPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
 
-steps:
 
-- script: echo 'Dont show this for PRs'
-  condition: and(succeeded(), eq(variables.triggeredByPullRequest, false))
+stages:
+  - stage: DummyStage
+    displayName: DummyStage
+    jobs:
+      - job: PrintStuff
+        steps:
+          - script: echo stuff
+  
+  - stage:
+    displayName: Build and publish
+    dependsOn: DummyStage
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+    jobs:
+      - job: CheckVersions
+        steps:
+        - script: echo 'Dont show this for PRs'
+          displayName: Hide from PRs
+          condition: and(succeeded(), eq(variables.triggeredByPullRequest, false))
 
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.10'
-  displayName: 'Use Python 3.10'
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.10'
+          displayName: 'Use Python 3.10'
 
-- bash: |
-    export PACKAGE_VERSION="$(python setup.py --version)"
-    echo "Package Version: ${PACKAGE_VERSION}"
-    echo "##vso[task.setvariable variable=packageVersionFormatted;]release-${PACKAGE_VERSION}"
-  displayName: 'Get package version'
+        - bash: |
+            export PACKAGE_VERSION="$(python setup.py --version)"
+            echo "Package Version: ${PACKAGE_VERSION}"
+            echo "##vso[task.setvariable variable=packageVersionFormatted;]release-${PACKAGE_VERSION}"
+          displayName: 'Get package version'
 
-- script: echo 'version $(packageVersionFormatted)'
-  displayName: 'test'
+        - script: echo 'version $(packageVersionFormatted)'
+          displayName: 'test'
 
-- bash: |
-    echo "building package"
-  displayName: 'Error if package version doesn't match tag'
-  condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
+        - bash: |
+            echo "stuff"
+            echo "building package"
+          displayName: "Error if package version doesn't match tag"
+          condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
-- script: echo "Checking if the package should be published"
-- ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
-    - script: echo "publishing"
-- ${{ else }}:
-  - bash: |
-    echo "Tag ${variables.Build.SourceBranchName} does not match version derived from setup.py ${packageVersionFormatted}"
-    exit 1
-  displayName: 'Publish package'
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+        - script: echo "Checking if the package should be published"
+          displayName: 'Publish package'
+        - ${{ if eq(variables.Build.SourceBranchName, variables.packageVersionFormatted) }}:
+          - script: |
+              echo "publishing"
+              echo $(Build.SourceBranchName)
+              echo $(packageVersionFormatted)
+        - ${{ else }}:
+          - script: |
+              echo "Tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+              exit 1
+
 
 
 
