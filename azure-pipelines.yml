@@ -27,7 +27,7 @@ variables:
 
 
 stages:
-  - stage:
+  - stage: DummyStage
     displayName: DummyStage
     jobs:
       - job: PrintStuff
