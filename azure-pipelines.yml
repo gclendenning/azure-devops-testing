@@ -9,7 +9,7 @@ trigger:
     - main
   tags:
     include:
-    - release-*
+    - '*'
 
 pr:
   branches:
@@ -37,7 +37,7 @@ stages:
   - stage:
     displayName: Build and publish
     dependsOn: DummyStage
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'), eq(variables.triggeredByPullRequest, false))
     jobs:
       - job: CheckVersions
         steps:
@@ -53,17 +53,11 @@ stages:
         - bash: |
             export PACKAGE_VERSION="$(python setup.py --version)"
             echo "Package Version: ${PACKAGE_VERSION}"
-            echo "##vso[task.setvariable variable=packageVersionFormatted;]release-${PACKAGE_VERSION}"
+            echo "##vso[task.setvariable variable=packageVersionFormatted;]${PACKAGE_VERSION}"
           displayName: 'Get package version'
 
         - script: echo 'version $(packageVersionFormatted)'
           displayName: 'test'
-
-        - bash: |
-            echo "stuff"
-            echo "building package"
-          displayName: "Error if package version doesn't match tag"
-          condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
         - script: |
             echo "publishing"
@@ -73,7 +67,7 @@ stages:
           condition: and(succeeded(), eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
 
         - script: |
-            echo "Tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
+            echo "Version in git tag $(Build.SourceBranchName) does not match version derived from setup.py $(packageVersionFormatted)"
             exit 1
           displayName: Raise error if version doesnt tag
           condition: and(succeeded(), ne(variables['Build.SourceBranchName'], variables['packageVersionFormatted']))
