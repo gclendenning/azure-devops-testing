@@ -88,7 +88,7 @@ stages:
           displayName: 'Install dependencies'
 
         - script: |
-            pip install hdbscan
+            pip install git+https://github.com/gclendenning/hdbscan.git
             pip freeze
           displayName: 'Install package'
 
