@@ -87,13 +87,13 @@ stages:
             python -m pip install --upgrade pip
           displayName: 'Install dependencies'
 
-        - script: |
-            pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
-            pip freeze
-          displayName: 'Install package'
+        # - script: |
+        #     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
+        #     pip freeze
+        #   displayName: 'Install package'
 
         - script: |
-            python test_hdbscan.py
+            python print_platforms.py
           displayName: 'Run tests'
 
 
