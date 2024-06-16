@@ -21,7 +21,7 @@ pr:
 
 variables:
   triggeredByPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
-  includeReleaseCandidates: $[ne(variables['INCLUDE_RELEASE_CANDIDATES'], 'false')]
+  includeReleaseCandidates: $[eq(variables['INCLUDE_RELEASE_CANDIDATES'], 'true')]
 
 stages:
   - stage: RunAllTests
