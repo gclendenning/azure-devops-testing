@@ -21,6 +21,7 @@ pr:
 
 variables:
   triggeredByPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
+  includeReleaseCandidates: $[ne(variables['INCLUDE_RELEASE_CANDIDATES'], 'false')]
 
 stages:
   - stage: RunAllTests
@@ -87,14 +88,24 @@ stages:
             python -m pip install --upgrade pip
           displayName: 'Install dependencies'
 
+        - bash: |
+            pip install -e .
+          displayName: 'Install package'
+          condition: eq(variables.includeReleaseCandidates, false)
+
+        - bash: |
+            pip install --pre -e .
+          displayName: 'Allow release candidates'
+          condition: eq(variables.includeReleaseCandidates, true)
+
         # - script: |
         #     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
         #     pip freeze
         #   displayName: 'Install package'
 
-        - script: |
-            python print_platforms.py
-          displayName: 'Run tests'
+        # - script: |
+        #     python print_platforms.py
+        #   displayName: 'Run tests'
 
 
 
