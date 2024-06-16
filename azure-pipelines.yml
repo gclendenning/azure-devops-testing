@@ -19,9 +19,15 @@ pr:
     - doc/*
     - README.rst
 
+parameters:
+  - name: includeReleaseCandidates
+    displayName: "Allow pre-release dependencies"
+    type: boolean
+    default: false
+
 variables:
   triggeredByPullRequest: $[eq(variables['Build.Reason'], 'PullRequest')]
-  includeReleaseCandidates: $[eq(variables['INCLUDE_RELEASE_CANDIDATES'], 'true')]
+  # includeReleaseCandidates: $[eq(variables['INCLUDE_RELEASE_CANDIDATES'], 'true')]
 
 stages:
   - stage: RunAllTests
@@ -91,12 +97,12 @@ stages:
         - bash: |
             pip install -e .
           displayName: 'Install package'
-          condition: eq(variables.includeReleaseCandidates, false)
+          condition: ${{ eq(parameters.includeReleaseCandidates, false) }}
 
         - bash: |
             pip install --pre -e .
-          displayName: 'Install package (allow release candidates)'
-          condition: eq(variables.includeReleaseCandidates, true)
+          displayName: 'Install package (allow pre-release dependencies)'
+          condition: ${{ eq(parameters.includeReleaseCandidates, true) }}
 
         # - script: |
         #     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
