@@ -95,7 +95,7 @@ stages:
 
         - bash: |
             pip install --pre -e .
-          displayName: 'Allow release candidates'
+          displayName: 'Install package (allow release candidates)'
           condition: eq(variables.includeReleaseCandidates, true)
 
         # - script: |
