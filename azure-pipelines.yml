@@ -105,8 +105,8 @@ stages:
           condition: ${{ eq(parameters.includeReleaseCandidates, true) }}
 
         - script: |
-            pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan
-            # pip install hdbscan
+            # pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan
+            pip install hdbscan
             pip freeze
           displayName: 'Install package'
 
