@@ -104,14 +104,15 @@ stages:
           displayName: 'Install package (allow pre-release dependencies)'
           condition: ${{ eq(parameters.includeReleaseCandidates, true) }}
 
-        # - script: |
-        #     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
-        #     pip freeze
-        #   displayName: 'Install package'
+        - script: |
+            # pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan==0.8.33rc1
+            pip install hdbscan
+            pip freeze
+          displayName: 'Install package'
 
-        # - script: |
-        #     python print_platforms.py
-        #   displayName: 'Run tests'
+        - script: |
+            python test_hdbscan.py
+          displayName: 'Run tests'
 
 
 
