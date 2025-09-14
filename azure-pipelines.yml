@@ -98,13 +98,13 @@ stages:
             echo "Not in python 3.13"
             echo "$(python.version)"
           displayName: 'Test non python 3.13'
-          condition: ne(variables.python.version, '3.13')
+          condition: ne(variables['python.version'], '3.13')
 
         - bash: |
             echo "In python 3.13"
             echo "$(python.version)"
           displayName: 'Test python 3.13'
-          condition: eq(variables.python.version, '3.13')
+          condition: eq(variables['python.version'], '3.13')
 
         # - bash: |
         #     pip install -e .
