@@ -36,15 +36,6 @@ stages:
       - job: run_platform_tests
         strategy:
           matrix:
-            mac_py39:
-              imageName: 'macOS-latest'
-              python.version: '3.9'
-            linux_py39:
-              imageName: 'ubuntu-latest'
-              python.version: '3.9'
-            windows_py39:
-              imageName: 'windows-latest'
-              python.version: '3.9'
             mac_py310:
               imageName: 'macOS-latest'
               python.version: '3.10'
@@ -94,18 +85,6 @@ stages:
             python -m pip install --upgrade pip
           displayName: 'Install dependencies'
 
-        - bash: |
-            echo "Not in python 3.13"
-            echo "$(python.version)"
-          displayName: 'Test non python 3.13'
-          condition: ne(variables['python.version'], '3.13')
-
-        - bash: |
-            echo "In python 3.13"
-            echo "$(python.version)"
-          displayName: 'Test python 3.13'
-          condition: eq(variables['python.version'], '3.13')
-
         # - bash: |
         #     pip install -e .
         #   displayName: 'Install package'
@@ -116,15 +95,14 @@ stages:
         #   displayName: 'Install package (allow pre-release dependencies)'
         #   condition: ${{ eq(parameters.includeReleaseCandidates, true) }}
 
-        # - script: |
-        #     # pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan
-        #     pip install hdbscan
-        #     pip freeze
-        #   displayName: 'Install package'
+        - script: |
+            pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple hdbscan
+            pip freeze
+          displayName: 'Install package'
 
-        # - script: |
-        #     python test_hdbscan.py
-        #   displayName: 'Run tests'
+        - script: |
+            python test_hdbscan.py
+          displayName: 'Run tests'
 
 
 
